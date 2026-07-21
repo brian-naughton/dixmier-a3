@@ -1,5 +1,7 @@
 ![dixmier-a3 — counterexamples, certified](assets/social-card.png)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21480775.svg)](https://doi.org/10.5281/zenodo.21480775)
+
 # A certified companion to the Dixmier counterexample in A₃ — and an explicit counterexample to the Poisson conjecture
 
 Three things happened fast in July 2026:

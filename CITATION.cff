@@ -6,7 +6,8 @@ authors:
     given-names: Brian
   - name: "Claude Fable 5 (Anthropic)"
 date-released: 2026-07-21
-version: "1.0"
+version: "1.0.1"
+doi: 10.5281/zenodo.21480775
 license: MIT
 keywords:
   - Dixmier conjecture
