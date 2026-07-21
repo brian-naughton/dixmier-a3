@@ -54,7 +54,8 @@ re-derivation.
 
 ## Status
 
-Note in [`main.tex`](main.tex). The certified explicit Poisson instance is
+Preprint: [`dixmier-a3-companion.pdf`](dixmier-a3-companion.pdf) (source
+[`main.tex`](main.tex), compiled with Tectonic). The certified explicit Poisson instance is
 the new content — the transfer argument itself is Bavula's. Corrections
 and prior-art pointers are very welcome; if this instance also appeared
 elsewhere first, tell us and we will cite it prominently.
