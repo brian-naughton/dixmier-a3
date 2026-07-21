@@ -1,0 +1,389 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\A}{A_3}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\gr}{\operatorname{gr}}
+\newcommand{\adj}{\operatorname{adj}}
+
+\title{A certified companion to the Dixmier counterexample in $A_3$,\\
+and an explicit counterexample to the Poisson conjecture}
+\author{Brian Naughton\thanks{In collaboration with Claude Fable 5 (Anthropic), which carried out the
+extraction, the proofs and the symbolic certification. All computations are
+reproducible from the repository accompanying this note.}}
+\date{21 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+On 19 July 2026, Alp\"oge announced an explicit non-injective polynomial map
+$F\colon\C^3\to\C^3$ with constant Jacobian determinant $-2$, refuting the
+Jacobian conjecture in dimension three~\cite{Alpoge2026}. The same night,
+Omniscience Research Agent and Pickhardt~\cite{OP2026} carried $F$ across
+the classical inverse-Jacobian pullback to obtain an explicit injective,
+non-surjective endomorphism of the third Weyl algebra, refuting the
+generalised Dixmier conjecture $DC_n$ for $n\ge3$; priority for that result
+is theirs. The present note contributes three things. First, a
+\emph{runnable exact-arithmetic certificate}: a short script that verifies,
+as polynomial identities over $\Q$, every computational claim on which the
+construction rests. Second, the \emph{explicit Poisson witness}: applying
+Bavula's same-rank associated-graded implication $PC_n\Rightarrow JC_n$
+\cite[Thm.~7]{Bavula2024} to Alp\"oge's map, we display and certify the
+resulting injective, non-surjective Poisson endomorphism of the standard
+symplectic Poisson algebra $\C[x_1,x_2,x_3,\xi_1,\xi_2,\xi_3]$. The
+transfer mechanism is Bavula's; as of 21 July 2026 we are unaware of an
+earlier note displaying and verifying this particular witness. Third, a
+streamlined self-contained exposition of the transfer. If Zheglov's
+announced proof of $DC_1$~\cite{Zheglov2024} is confirmed, $DC_2$ is the
+only undecided rank.
+\end{abstract}
+
+\section{Introduction}
+
+Let $A_n = A_n(\C)$ denote the $n$-th Weyl algebra: the unital associative
+$\C$-algebra with generators $x_1,\dots,x_n,\partial_1,\dots,\partial_n$ and
+relations
+\begin{equation}\label{eq:ccr}
+[x_i,x_j]=0,\qquad [\partial_i,\partial_j]=0,\qquad
+[\partial_i,x_j]=\delta_{ij}\qquad(1\le i,j\le n).
+\end{equation}
+Dixmier~\cite{Dixmier1968} asked in 1968 whether every algebra endomorphism
+of $A_1$ is an automorphism; the generalised \emph{Dixmier conjecture}
+$DC_n$ asserts this for $A_n$. It is classical that $DC_n$ implies the
+Jacobian conjecture $JC_n$ in the same dimension (see van den
+Essen~\cite{vdE2000}; the construction of the pullback appears in
+Bavula~\cite{Bavula2024}, and the order-preservation argument is recorded by
+Belov-Kanel and Kontsevich~\cite[p.~2]{BKK2007}), while the much deeper
+converse passes to doubled dimension: $JC_{2n}\Rightarrow
+DC_n$~\cite{Tsuchimoto2005,BKK2007}; see also Adjamagbo--van den
+Essen~\cite{AvdE2007}, who add the Poisson conjecture to the equivalence
+web.
+
+On 19 July 2026, Alp\"oge, working with the language model Claude Fable~5,
+announced an explicit counterexample to $JC_3$~\cite{Alpoge2026}: the map
+$F=(F_1,F_2,F_3)\colon\C^3\to\C^3$,
+\begin{equation}\label{eq:F}
+\begin{aligned}
+F_1 &= (1+xy)^3 z + y^2(1+xy)(4+3xy),\\
+F_2 &= y + 3x(1+xy)^2 z + 3xy^2(4+3xy),\\
+F_3 &= 2x - 3x^2y - x^3 z,
+\end{aligned}
+\end{equation}
+satisfies $\det JF \equiv -2$ yet identifies three distinct points:
+\begin{equation}\label{eq:collision}
+F\bigl(0,\,0,\,-\tfrac14\bigr)
+= F\bigl(1,\,-\tfrac32,\,\tfrac{13}{2}\bigr)
+= F\bigl(-1,\,\tfrac32,\,\tfrac{13}{2}\bigr)
+= \bigl(-\tfrac14,\,0,\,0\bigr).
+\end{equation}
+That same night, Omniscience Research Agent and Pickhardt~\cite{OP2026}
+published the resulting explicit counterexample to $DC_3$, with two
+complete proofs of non-surjectivity (via centralisers and via the order
+filtration), a Gr\"obner-basis verification that the fibre over
+$(-\tfrac14,0,0)$ consists of exactly the three points
+\eqref{eq:collision}, and the rank monotonicity $DC_n\Rightarrow DC_m$ for
+$m\le n$. \textbf{Priority for the Dixmier counterexample belongs
+to~\cite{OP2026}}; we learned of their preprint after completing an
+independent derivation of the same result, and this note has been reframed
+accordingly.
+
+What this note adds:
+\begin{enumerate}
+\item \textbf{A certificate} (Section~\ref{sec:certified}). Reference
+\cite{OP2026} observes that everything can ``be confirmed by exact
+arithmetic rather than taken on faith'' but ships no artefact for doing so.
+The repository accompanying this note contains a short script certifying,
+as exact polynomial identities over $\Q$, every computational ingredient:
+the determinant, the collision, the Weyl relations for the pullback, and
+the Poisson relations for its graded shadow.
+\item \textbf{The Poisson instance} (Section~\ref{sec:poisson}). The
+associated-graded map of the Weyl pullback is an explicit injective,
+non-surjective endomorphism of the polynomial Poisson algebra
+$\C[x,\xi]$ with its standard symplectic bracket, refuting the Poisson
+conjecture (as formulated in~\cite{AvdE2007}) in rank $\ge3$ with an
+explicit witness. The same-rank transfer mechanism --- extend the Keller
+map to the Weyl algebra, pass to the associated graded, observe a Poisson
+endomorphism --- is prior art: it is exactly Bavula's proof of
+$PC_n\Rightarrow JC_n$~\cite[Thm.~7]{Bavula2024}. What we contribute is
+the written-out, certified instance at Alp\"oge's map, a consequence not
+displayed in \cite{OP2026} or, to our knowledge, in the other early
+consequence notes (e.g.~\cite{Zhang2026}, which derives Mathieu-type
+consequences).
+\item \textbf{A compact exposition} (Sections~\ref{sec:weyl}--\ref{sec:nonsurj}),
+kept because the certificate refers to its numbered identities.
+\end{enumerate}
+
+\section{The map, and what is certified}\label{sec:certified}
+
+Write $x=(x_1,x_2,x_3)=(x,y,z)$ and $J = JF = (\partial F_i/\partial
+x_k)_{ik}$. Since $\det J\equiv-2$ (an identity of polynomials; certified,
+and provable by hand via the elegant substitution of \cite[Lem.~1]{OP2026}),
+the matrix
+\[
+G \;:=\; (J^{\mathsf T})^{-1} \;=\; -\tfrac12\,\adj(J^{\mathsf T})
+\]
+has entries in $\Q[x,y,z]$, with $\det G = 1/\det J^{\mathsf T} = -\tfrac12$.
+The accompanying script \texttt{verify\_endomorphism.py} certifies, by exact
+symbolic computation over $\Q$ (every check is a polynomial in
+$\Q[x,y,z]$ or $\Q[x,\xi]$ tested for literal vanishing):
+\begin{itemize}
+\item[(C0)] $\det J \equiv -2$; the three points in \eqref{eq:collision}
+are pairwise distinct and share the stated image; $\det G \equiv -\tfrac12$;
+\item[(R1)] $G\,J^{\mathsf T} = I$ \quad (nine identities);
+\item[(R2)] $\displaystyle\sum_{k}\Bigl(G_{ik}\,\partial_k G_{jl} -
+G_{jk}\,\partial_k G_{il}\Bigr) = 0$ for all $i,j,l$ \quad (the flatness
+identities);
+\item[(P1--P3)] the Poisson relations of Section~\ref{sec:poisson}, checked
+directly against the definition of the bracket.
+\end{itemize}
+The script prints its Python and SymPy versions, exits successfully only if
+every identity holds, and writes the nine entries of $G$ to a
+machine-readable file \texttt{G.json}, so that the endomorphism below is
+explicit without any re-derivation by the reader.
+
+\section{The Weyl pullback}\label{sec:weyl}
+
+Define, following the classical construction (Bavula~\cite{Bavula2024};
+\cite[\S3]{OP2026}):
+\[
+\varphi(x_i) = F_i,\qquad
+\varphi(\partial_j) = D_j := \sum_{k=1}^{3} G_{jk}\,\partial_k .
+\]
+
+\begin{proposition}\label{prop:welldef}
+$\varphi$ extends uniquely to a unital algebra endomorphism of $\A$.
+\end{proposition}
+
+\begin{proof}
+By the presentation \eqref{eq:ccr} it suffices to check the relations on
+the images. The $F_i$ commute. Since $F_i$ is a multiplication operator,
+$[D_j,F_i]=D_j(F_i)=\sum_k G_{jk}\,\partial F_i/\partial x_k=(G\,J^{\mathsf
+T})_{ji}=\delta_{ji}$ by (R1). For (R2) there is both the certificate and
+the conceptual argument of \cite[Prop.~3]{OP2026}: $[D_i,D_j]$ is a
+derivation $\sum_l c_l\partial_l$ of $\C[x,y,z]$, and applying it to $F_m$
+gives $[D_i,D_j](F_m)=D_i(\delta_{jm})-D_j(\delta_{im})=0$, i.e.\
+$J\,(c_1,c_2,c_3)^{\mathsf T}=0$; invertibility of $J$ over $\C[x,y,z]$
+forces every $c_l=0$.
+\end{proof}
+
+\section{Injectivity and failure of surjectivity}\label{sec:nonsurj}
+
+Every element of $\A$ has a unique normal form $P=\sum_\alpha
+a_\alpha(x)\,\partial^\alpha$; for $P\neq0$ set $\ord(P) := \max\{|\alpha| :
+a_\alpha\neq0\}$ and $\Sigma_m=\{P:\ord(P)\le m\}\cup\{0\}$. The associated
+graded algebra is the commutative polynomial ring
+$\gr\A=\C[x_1,x_2,x_3][\xi_1,\xi_2,\xi_3]$~\cite[Ch.~2--3]{Coutinho1995}.
+We identify $\xi_j$ with $-\sigma(\partial_j)$, where $\sigma$ denotes the
+principal symbol; with this identification the graded bracket determined
+by $\{\sigma(P),\sigma(Q)\}=\sigma([P,Q])$ is the standard symplectic
+bracket of Section~\ref{sec:poisson}, with $\{x_i,\xi_j\}=+\delta_{ij}$,
+and no sign disclaimers are needed below.
+
+\begin{lemma}\label{lem:algind}
+$F_1,F_2,F_3$ are algebraically independent over $\C$; equivalently
+$a\mapsto a\circ F$ is injective on $\C[x,y,z]$.
+\end{lemma}
+
+\begin{proof}
+Standard in characteristic zero from $\det J\ne 0$. A nonzero constant $Q$
+cannot satisfy $Q(F)=0$, so a nonzero relation $Q$ of minimal total degree
+has positive degree and some $\partial Q/\partial y_i\ne0$. Applying
+$\partial/\partial x_k$ to $Q(F)=0$ gives $\sum_i (\partial Q/\partial
+y_i)(F)\, J_{ik}=0$; invertibility of $J$ over $\C(x,y,z)$ forces
+$(\partial Q/\partial y_i)(F)=0$ for all $i$, contradicting minimality.
+\end{proof}
+
+\begin{lemma}\label{lem:filtration}
+$\varphi(\Sigma_m)\subseteq\Sigma_m$, the induced graded map is
+\[
+(\gr\varphi)(P)(x,\xi) \;=\; P\bigl(F(x),\, G(x)\,\xi\bigr),
+\]
+$\gr\varphi$ is injective, and consequently
+$\ord(\varphi(P))=\ord(P)$ for every nonzero $P\in\A$.
+\end{lemma}
+
+\begin{proof}
+$\varphi(x_i)\in\Sigma_0$ and $\varphi(\partial_j)\in\Sigma_1$, so
+$\varphi$ is filtered and $\gr\varphi$ is the displayed map on
+$\gr\A=\C[x][\xi]$. Suppose $P(F,G\xi)=0$. Over $K=\C(x,y,z)$ the matrix
+$G$ is invertible ($\det G=-\tfrac12$), so substituting
+$\xi\mapsto G^{-1}\xi$ gives $P(F(x),\xi)=0$ in $K[\xi]$; reading off
+$\xi$-coefficients and applying Lemma~\ref{lem:algind} gives $P=0$. Strict
+order preservation follows: a nonzero principal symbol has nonzero image.
+\end{proof}
+
+\begin{theorem}[{\cite[Cor.~7]{OP2026}}; independent derivation]\label{thm:weyl}
+$\varphi$ is injective and not surjective. Hence $DC_3$ is false, and by
+padding $F$ with identity coordinates, $DC_n$ is false for every $n\ge 3$.
+\end{theorem}
+
+\begin{proof}
+$\A$ is simple~\cite{Dixmier1968}, so the kernel of the unital endomorphism
+$\varphi$ is zero. In fact $x_1\notin\operatorname{im}\varphi$: if
+$\varphi(P)=x_1$ then Lemma~\ref{lem:filtration} gives $\ord(P)=0$, so
+$P=p(x)$ is a polynomial with $p(F)=x_1$. Evaluating at the first two
+points of \eqref{eq:collision}, whose images under $F$ coincide, gives
+$p(-\tfrac14,0,0)=0$ and $p(-\tfrac14,0,0)=1$, a contradiction.
+\end{proof}
+
+\section{The explicit Poisson counterexample}\label{sec:poisson}
+
+Equip $\mathcal P_3 := \C[x_1,x_2,x_3,\xi_1,\xi_2,\xi_3]$ with the standard
+symplectic Poisson bracket, determined by
+\[
+\{x_i,x_j\}=0,\qquad \{\xi_i,\xi_j\}=0,\qquad \{x_i,\xi_j\}=\delta_{ij},
+\qquad
+\{f,g\}=\sum_k\Bigl(\frac{\partial f}{\partial x_k}\frac{\partial
+g}{\partial \xi_k}-\frac{\partial f}{\partial \xi_k}\frac{\partial
+g}{\partial x_k}\Bigr).
+\]
+The \emph{Poisson conjecture} in rank $n$ (as formulated
+in~\cite{AvdE2007}) asserts that every Poisson endomorphism of
+$\mathcal P_n$ --- a $\C$-algebra endomorphism preserving the bracket ---
+is an automorphism.
+
+\begin{theorem}\label{thm:poisson}
+The assignment
+\[
+\psi(x_i) = F_i,\qquad
+\psi(\xi_j) = \eta_j := \sum_{k=1}^3 G_{jk}\,\xi_k
+\]
+extends uniquely to a Poisson endomorphism $\psi$ of $\mathcal P_3$
+(equivalently, $\psi=\gr\varphi$), and $\psi$ is injective but not
+surjective. Hence the Poisson conjecture is false in rank $3$, and, by
+padding, in every rank $n\ge 3$.
+\end{theorem}
+
+\begin{proof}
+\emph{Well defined.} $\psi$ is a polynomial-algebra endomorphism on the
+$6$ generators; it is Poisson iff the brackets of the images match the
+brackets of the generators. $\{F_i,F_j\}=0$ since the $F_i$ do not involve
+$\xi$ (P1). $\{F_i,\eta_j\}=\sum_k (\partial F_i/\partial x_k)
+G_{jk}=(G J^{\mathsf T})_{ji}=\delta_{ij}$ by (R1) (P2). Finally
+$\{\eta_i,\eta_j\}=\sum_l\bigl(\sum_k G_{jk}\,\partial_k G_{il}-
+G_{ik}\,\partial_k G_{jl}\bigr)\xi_l$, whose $l$-th coefficient is the
+\emph{negative} of the flatness expression (R2), hence vanishes (P3). All
+three families are also certified directly against the definition of the
+bracket by the script.
+
+\emph{Injective.} $\psi$ is exactly the map $P\mapsto P(F,G\xi)$ of
+Lemma~\ref{lem:filtration}, shown there to be injective.
+
+\emph{Not surjective.} $\psi$ is graded for the $\xi$-degree: $F_i$ has
+$\xi$-degree $0$ and $\eta_j$ has $\xi$-degree $1$, so $\psi$ maps
+$\xi$-degree-$m$ homogeneous elements to $\xi$-degree-$m$ homogeneous
+elements. Suppose $\psi(P)=x_1$ and write $P=\sum_m P_m$ with $P_m$
+homogeneous of $\xi$-degree $m$. Since $x_1$ has $\xi$-degree $0$, we get
+$\psi(P_m)=0$ for every $m>0$; injectivity gives $P_m=0$, so $P=p(x)$ is a
+polynomial with $p(F)=x_1$. Evaluating at the first two points of
+\eqref{eq:collision}, whose images under $F$ coincide, gives
+$p(-\tfrac14,0,0)=0$ and $p(-\tfrac14,0,0)=1$, a contradiction. Hence
+$x_1\notin\operatorname{im}\psi$.
+
+For $n\ge4$, pad $F$ with identity coordinates as in
+Theorem~\ref{thm:weyl}; the same argument applies verbatim.
+\end{proof}
+
+\begin{remark}
+The transfer mechanism in Theorem~\ref{thm:poisson} is not new: extending
+a Keller map to the Weyl algebra, passing to the associated graded, and
+observing a Poisson endomorphism whose invertibility would force
+invertibility of the original map is precisely Bavula's same-rank proof of
+$PC_n\Rightarrow JC_n$~\cite[Thm.~7]{Bavula2024}; no stable equivalence
+and no rank doubling enters. Our contribution is the explicit certified
+instance at the map \eqref{eq:F}. With the identification of
+Section~\ref{sec:nonsurj}, $\psi=\gr\varphi$ literally: the counterexample
+to the quantum statement and the counterexample to its classical limit are
+associated graded to one another.
+\end{remark}
+
+\begin{remark}[Status of the remaining ranks]
+Rank monotonicity ($DC_n\Rightarrow DC_m$ for $m\le n$,
+\cite[Prop.~9]{OP2026}) means the refutation propagates upward only.
+Zheglov has posted a preprint claiming a proof of
+$DC_1$~\cite{Zheglov2024}; we do not assess its status. If that claim is
+confirmed, $DC_2$ is the only undecided rank of the Dixmier family, as
+$JC_2$ is of the Jacobian family.
+\end{remark}
+
+\subsection*{Code availability}
+\texttt{verify\_endomorphism.py} and \texttt{G.json} accompany this note.
+A kernel-checked (Lean~4) rendering of the certified identities is
+mechanical and planned as a follow-up; we make no claim for it here.
+
+\subsection*{Acknowledgements}
+The counterexample $F$ is due to Levent Alp\"oge with Claude
+Fable~5~\cite{Alpoge2026}. The Dixmier counterexample was first published
+by Omniscience Research Agent and Jeff Pickhardt~\cite{OP2026}, whose
+careful preprint we warmly acknowledge; the present note was derived
+independently on 21 July and reframed as a companion upon learning of
+theirs. We thank GPT-5.6 (OpenAI) for an adversarial review that caught,
+among other things, a sign error in $\det G$ and the missing prior-art
+citation. Errors that remain are ours.
+
+\begin{thebibliography}{9}
+
+\bibitem{Dixmier1968}
+J.~Dixmier, \emph{Sur les alg\`ebres de Weyl}, Bull. Soc. Math. France
+\textbf{96} (1968), 209--242.
+
+\bibitem{Alpoge2026}
+L.~Alp\"oge, X post displaying the map \eqref{eq:F} and the collision
+\eqref{eq:collision}, 19 July 2026,
+\texttt{x.com/\_\_alpoge\_\_/status/2079028340955197566}.
+
+\bibitem{OP2026}
+Omniscience Research Agent and J.~Pickhardt, \emph{An explicit
+counterexample to the Dixmier conjecture in $A_3$}, 19 July 2026,
+\texttt{omniscienceproject.com/papers/an-explicit-counterexample-to-the-\\
+dixmier-conjecture-in-a-3-jfLENtXF}.
+
+\bibitem{Bavula2024}
+V.~V.~Bavula, \emph{Holonomic modules and 1-generation in the Jacobian
+Conjecture}, C. R. Math. \textbf{362} (2024), 731--738; arXiv:2112.03177.
+
+\bibitem{vdE2000}
+A.~van den Essen, \emph{Polynomial Automorphisms and the Jacobian
+Conjecture}, Progress in Mathematics 190, Birkh\"auser, 2000.
+
+\bibitem{Tsuchimoto2005}
+Y.~Tsuchimoto, \emph{Endomorphisms of Weyl algebra and $p$-curvatures},
+Osaka J. Math. \textbf{42} (2005), 435--452.
+
+\bibitem{BKK2007}
+A.~Belov-Kanel and M.~Kontsevich, \emph{The Jacobian conjecture is stably
+equivalent to the Dixmier conjecture}, Mosc. Math. J. \textbf{7} (2007),
+209--218.
+
+\bibitem{AvdE2007}
+P.~K.~Adjamagbo and A.~van den Essen, \emph{A proof of the equivalence of
+the Dixmier, Jacobian and Poisson conjectures}, Acta Math. Vietnam.
+\textbf{32} (2007), 205--214.
+
+\bibitem{Zheglov2024}
+A.~Zheglov, \emph{The conjecture of Dixmier for the first Weyl algebra is
+true}, preprint, arXiv:2410.06959 (v5, 19 January 2026).
+
+\bibitem{Zhang2026}
+Z.~Zhang, \emph{Direct consequences of the three-dimensional counterexample
+to the Jacobian conjecture}, note, 20 July 2026.
+
+\bibitem{Coutinho1995}
+S.~C.~Coutinho, \emph{A Primer of Algebraic $D$-modules}, LMS Student Texts
+33, Cambridge University Press, 1995.
+
+\end{thebibliography}
+
+\end{document}

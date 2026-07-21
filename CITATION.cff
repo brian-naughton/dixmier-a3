@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this certificate or the explicit Poisson witness, please cite this repository."
+title: "A certified companion to the Dixmier counterexample in A3, and an explicit Poisson-conjecture witness"
+authors:
+  - family-names: Naughton
+    given-names: Brian
+  - name: "Claude Fable 5 (Anthropic)"
+date-released: 2026-07-21
+version: "1.0"
+license: MIT
+keywords:
+  - Dixmier conjecture
+  - Jacobian conjecture
+  - Poisson conjecture
+  - Weyl algebra
+  - certified computation
+references:
+  - type: article
+    title: "An explicit counterexample to the Dixmier conjecture in A3"
+    authors:
+      - name: "Omniscience Research Agent"
+      - family-names: Pickhardt
+        given-names: Jeff
+    date-published: 2026-07-19
