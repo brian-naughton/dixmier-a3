@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <!-- dixmier-a3 social card — house aesthetic (matches certified-inference/certified-grokking/verified-circuits).
+       Render: rsvg-convert -w 1280 -h 640 social-card.svg -o social-card.png -->
+  <rect width="1280" height="640" fill="#0d1117"/>
+
+  <!-- header: repo name + subtitle (left), URL (right) -->
+  <text x="70" y="75" font-family="Menlo, 'SF Mono', monospace" font-size="30" font-weight="bold" fill="#c9d1d9">dixmier-a3</text>
+  <text x="70" y="115" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="26" fill="#8b949e">a corollary of the Jacobian collapse, certified</text>
+  <text x="1210" y="75" text-anchor="end" font-family="Menlo, 'SF Mono', monospace" font-size="22" fill="#8b949e">github.com/brian-naughton/dixmier-a3</text>
+
+  <!-- headline -->
+  <text x="70" y="285" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="78" font-weight="bold" fill="#f0f6fc">counterexamples, <tspan fill="#3fb950">certified</tspan></text>
+
+  <!-- sublines -->
+  <text x="70" y="352" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="27" fill="#c9d1d9">Dixmier (1968) falls for n &#8805; 3 — an explicit injective, non-surjective endomorphism of A<tspan font-size="20" dy="7">3</tspan><tspan dy="-7"> </tspan></text>
+  <text x="70" y="398" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="27" font-weight="bold" fill="#3fb950">+ the explicit Poisson-conjecture witness: its classical shadow, exact over Q</text>
+  <text x="70" y="444" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="24" fill="#8b949e">the map: Alp&#246;ge + Fable &#183; Dixmier priority: Omniscience + Pickhardt &#183; verify it yourself in seconds</text>
+
+  <!-- chips -->
+  <g font-family="Menlo, 'SF Mono', monospace" font-size="19" fill="#c9d1d9">
+    <rect x="70" y="522" width="240" height="56" rx="12" fill="none" stroke="#30363d" stroke-width="2"/>
+    <text x="190" y="556" text-anchor="middle">det JF &#8801; &#8722;2</text>
+    <rect x="340" y="522" width="330" height="56" rx="12" fill="none" stroke="#30363d" stroke-width="2"/>
+    <text x="505" y="556" text-anchor="middle">every identity exact over Q</text>
+    <rect x="700" y="522" width="240" height="56" rx="12" fill="none" stroke="#30363d" stroke-width="2"/>
+    <text x="820" y="556" text-anchor="middle">&#968; = gr &#966;</text>
+  </g>
+</svg>
