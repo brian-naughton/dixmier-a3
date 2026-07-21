@@ -1,6 +1,6 @@
 ![dixmier-a3 — counterexamples, certified](assets/social-card.png)
 
-[![DOI](https://zenodo.org/badge/1308117064.svg)](https://doi.org/10.5281/zenodo.21480775)
+[![DOI](assets/doi-badge.svg)](https://doi.org/10.5281/zenodo.21480775)
 
 # A certified companion to the Dixmier counterexample in A₃ — and an explicit counterexample to the Poisson conjecture
 
